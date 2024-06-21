@@ -38,16 +38,19 @@ const deleteUser = asyncHandler(async (req, res) => {
   const { uid } = req.params;
   const response = await User.findByIdAndDelete(uid);
   return res.status(200).json({
+    mes: response
+    ? `User have deleted`
+    : "No user delete",
     success: response ? true : false,
     response,
-    // mes: response
-    //   ? `User have deleted`
-    //   : "No user delete",
   });
 });
 
 const getUsers = asyncHandler(async (req, res) => {
-  const response = await User.find().select('-refreshToken -password -role')
+  const response = await User.find().select('-refreshToken -password -role').populate({
+    path: 'posts',
+    select: 'title content'
+  });
   return res.status(200).json({
       success: response ? true : false,
       users: response

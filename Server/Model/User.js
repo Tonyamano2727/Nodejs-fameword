@@ -26,6 +26,7 @@ var userSchema = new mongoose.Schema({
         type:String,
         required:true,
     },
+    
     role:{
         type:String,
         default: 'user',
@@ -39,9 +40,9 @@ var userSchema = new mongoose.Schema({
             type:mongoose.Types.ObjectId , ref: 'Address'
         }
     ],
-    wishlist:[
+    posts:[
         {
-            type:mongoose.Types.ObjectId , ref: 'Product'
+            type:mongoose.Types.ObjectId , ref: 'Post'
         }
     ],
     isBlocked: {
@@ -72,17 +73,17 @@ userSchema.pre("save", async function(next){
     this.password = await bcrypt.hash(this.password , salt)
 });
 
-userSchema.methods =  {
-    isConrectPassword : async function(password){
-        return await bcrypt.compare(password, this.password)
-    },
-    createPasswordchangedToken: function () {
-      const resetToken =  crypto.randomBytes(32).toString('hex')  // 16 ky tu 0>9 a>s
-      this.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex')
-      this.passwordResetExpires = Date.now() + 15 * 60 * 1000 // cong 15p
-      return resetToken
-    }
-}
+// userSchema.methods =  {
+//     isConrectPassword : async function(password){
+//         return await bcrypt.compare(password, this.password)
+//     },
+//     createPasswordchangedToken: function () {
+//       const resetToken =  crypto.randomBytes(32).toString('hex')  // 16 ky tu 0>9 a>s
+//       this.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex')
+//       this.passwordResetExpires = Date.now() + 15 * 60 * 1000 // cong 15p
+//       return resetToken
+//     }
+// }
 
 //Export the model
 module.exports = mongoose.model('User', userSchema);
